@@ -30,12 +30,8 @@ module Catarse
     config.encoding = "utf-8"
 
     config.filter_parameters += [:password, :password_confirmation]
-<<<<<<< HEAD
     config.time_zone = 'Europe/Moscow'
-=======
-    config.time_zone = 'Brasilia'
     config.active_record.default_timezone = :local
->>>>>>> upstream/master
     config.generators do |g|
       g.test_framework :rspec, fixture: false, views: false
     end

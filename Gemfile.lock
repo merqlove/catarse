@@ -137,6 +137,7 @@ GEM
       thor
     crack (0.1.8)
     curb (0.8.5)
+    dalli (2.7.0)
     database_cleaner (1.2.0)
     debug_inspector (0.0.2)
     devise (3.0.4)
@@ -194,8 +195,6 @@ GEM
       actionpack (>= 3.2, < 5)
       activesupport (>= 3.2, < 5)
     hashie (2.0.5)
-    heroku-deflater (0.5.3)
-      rack (>= 1.4.5)
     high_voltage (2.1.0)
     hike (1.2.3)
     htmlentities (4.3.1)
@@ -495,7 +494,6 @@ DEPENDENCIES
   formtastic (~> 2.2.1)
   google-analytics-rails
   has_scope (~> 0.6.0.rc)
-  heroku-deflater (>= 0.4.1)
   high_voltage
   http_accept_language
   httparty (~> 0.6.1)
@@ -539,7 +537,6 @@ DEPENDENCIES
   state_machine
   to_xls
   uglifier
-  unf
   unicorn
   video_info (>= 1.1.1)
   weekdays

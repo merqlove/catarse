@@ -12,13 +12,8 @@ Catarse::Application.configure do
 
   # Show full error reports and disable caching.
   config.consider_all_requests_local       = true
-<<<<<<< HEAD
-  config.action_controller.perform_caching = true
-  
-  config.cache_store = :dalli_store
-=======
   config.action_controller.perform_caching = false
->>>>>>> upstream/master
+  config.cache_store = :dalli_store
 
   # Don't care if the mailer can't send.
   config.action_mailer.raise_delivery_errors = false
@@ -39,4 +34,3 @@ Catarse::Application.configure do
 
   config.action_mailer.asset_host = "http://localhost:3000"
 end
-
