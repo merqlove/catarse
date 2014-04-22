@@ -1,12 +1,12 @@
 source 'https://rubygems.org'
 
 # For heroku
-ruby '1.9.3'
+# ruby '1.9.3'
 # Papertrail does not work with rails 3.2.12 + ruby 2.0.0
 # https://github.com/airblade/paper_trail/issues/208 
 
 # We got some weird bug concerning encoding of AR objects in rails 3.2.13+
-gem 'rails',    '3.2.12'
+gem 'rails',    '3.2.14'
 gem 'sidekiq',  '~> 2.13.0'
 gem 'sinatra', require: false # required by sidekiq web interface mounted on /sidekiq
 
@@ -17,7 +17,7 @@ gem 'best_in_place'
 gem 'state_machine', require: 'state_machine/core'
 
 # paranoid stuff
-gem 'paper_trail', '~> 2.7.2'
+gem 'paper_trail', '>= 3.0.0.rc2'
 
 # Database and data related
 gem 'pg'
@@ -49,6 +49,7 @@ gem 'omniauth-twitter'
 gem 'omniauth-facebook', '1.4.0'
 gem 'devise'
 gem 'ezcrypto'
+gem 'unf'
 
 # See https://github.com/ryanb/cancan/tree/2.0 for help about this
 # In resume: this version of cancan allow checking for authorization on specific fields on the model
@@ -93,10 +94,11 @@ group :production do
 
   # Workers, forks and all that jazz
   gem 'unicorn'
+  # gem 'puma'
 
   # Enabling Gzip on Heroku
   # If you don't use Heroku, please comment the line below.
-  gem 'heroku-deflater', '>= 0.4.1'
+  # gem 'heroku-deflater', '>= 0.4.1'
 
 
   # Monitoring with the new new relic
@@ -106,7 +108,7 @@ group :production do
   # Probably this is due to our pattern of cache usage
   # + the lack of concurrent procs in our deploy
   #gem 'memcachier'
-  #gem 'dalli'
+  gem 'dalli'
 end
 
 group :development do
@@ -115,6 +117,7 @@ group :development do
   gem 'better_errors'
   gem 'binding_of_caller'
   gem 'rack-mini-profiler'
+  gem 'thin'
 end
 
 group :test, :development do

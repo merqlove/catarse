@@ -4,7 +4,10 @@ Devise.setup do |config|
   # ==> Mailer Configuration
   # Configure the e-mail address which will be shown in Devise::Mailer,
   # note that it will be overwritten if you use your own mailer class with default "from" parameter.
-  config.mailer_sender = "Catarse <system@catarse.me>"
+  config.mailer_sender = "WorldStarter <noreply@worldstarter.com>"
+  
+  config.secret_key = '9d5719d6dcb7d3e2789338eb9a93a15598eb19e3796d20a5604a1fd01c82e3bcfdf170da6be3cbd791aa855fd6a06c76e8468bf25a96bd396a9a4c2320b06255'
+
   # ==> ORM configuration
   # Load and configure the ORM. Supports :active_record (default) and
   # :mongoid (bson_ext recommended) by default. Other ORMs may be
