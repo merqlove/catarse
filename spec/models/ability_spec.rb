@@ -17,7 +17,6 @@ describe Ability do
 
     it { should_not be_able_to(:access, :all) }
     it { should be_able_to(:update, project) }
-    it { should be_able_to(:create, :projects) }
     it { should be_able_to(:update, reward)}
 
     describe "when project is approved" do
@@ -32,35 +31,37 @@ describe Ability do
       it { should be_able_to(:update, project, :uploaded_image) }
       it { should be_able_to(:destroy, reward) }
       it { should be_able_to(:update, reward, :days_to_delivery) }
+      it { should be_able_to(:update, reward, :description) }
+      it { should be_able_to(:update, reward, :maximum_contributions) }
 
       context "and someone make a back and select a reward" do
-        context "when backer is in time to confirm and not have confirmed backers" do
-          before { FactoryGirl.create(:backer, project: project, state: 'waiting_confirmation', reward: reward) }
+        context "when contribution is in time to confirm and not have confirmed contributions" do
+          before { FactoryGirl.create(:contribution, project: project, state: 'waiting_confirmation', reward: reward) }
 
           it { should_not be_able_to(:update, reward, :minimum_value) }
           it { should_not be_able_to(:destroy, reward) }
           it { should be_able_to(:update, reward, :description) }
-          it { should be_able_to(:update, reward, :maximum_backers) }
+          it { should be_able_to(:update, reward, :maximum_contributions) }
           it { should be_able_to(:update, reward, :days_to_delivery) }
         end
 
-        context "when backer is not in time to confirm and have confirmed backers" do
-          before { FactoryGirl.create(:backer, project: project, reward: reward, created_at: 7.day.ago, state: 'confirmed') }
+        context "when contribution is not in time to confirm and have confirmed contributions" do
+          before { FactoryGirl.create(:contribution, project: project, reward: reward, created_at: 7.day.ago, state: 'confirmed') }
 
           it { should_not be_able_to(:update, reward, :minimum_value) }
           it { should_not be_able_to(:destroy, reward) }
           it { should be_able_to(:update, reward, :description) }
-          it { should be_able_to(:update, reward, :maximum_backers) }
+          it { should be_able_to(:update, reward, :maximum_contributions) }
           it { should be_able_to(:update, reward, :days_to_delivery) }
         end
 
-        context "when backer is not in time to confirm and not have confirmed backers" do
-          before { FactoryGirl.create(:backer, project: project, reward: reward, payment_token: 'ABC', created_at: 7.day.ago, state: 'pending') }
+        context "when contribution is not in time to confirm and not have confirmed contributions" do
+          before { FactoryGirl.create(:contribution, project: project, reward: reward, payment_token: 'ABC', created_at: 7.day.ago, state: 'pending') }
 
           it { should be_able_to(:update, reward, :minimum_value) }
           it { should be_able_to(:destroy, reward) }
           it { should be_able_to(:update, reward, :description) }
-          it { should be_able_to(:update, reward, :maximum_backers) }
+          it { should be_able_to(:update, reward, :maximum_contributions) }
           it { should be_able_to(:update, reward, :days_to_delivery) }
         end
       end
@@ -104,7 +105,6 @@ describe Ability do
 
     it { should_not be_able_to(:access, :all) }
     it { should_not be_able_to(:update, project) }
-    it { should be_able_to(:create, :projects) }
     it { should_not be_able_to(:update, reward)}
   end
 

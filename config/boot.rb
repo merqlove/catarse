@@ -11,4 +11,7 @@ rescue Bundler::GemNotFound => e
   exit!
 end if File.exist?(gemfile)
 require 'yaml'
+<<<<<<< HEAD
 YAML::ENGINE.yamler = 'psych'
+=======
+>>>>>>> upstream/master

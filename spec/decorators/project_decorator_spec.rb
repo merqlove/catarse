@@ -3,6 +3,61 @@ require 'spec_helper'
 describe ProjectDecorator do
   let(:project){ create(:project, about: 'Foo Bar http://www.foo.bar <javascript>xss()</javascript>"Click here":http://click.here') }
 
+  describe "#time_to_go" do
+    let(:project){ build(:project) }
+    let(:expires_at){ Time.zone.parse("23:00:00") }
+    subject{ project.time_to_go }
+    before do
+      I18n.locale = :pt
+      project.stub(:expires_at).and_return(expires_at)
+    end
+
+    context "when there is more than 1 day to go" do
+      let(:expires_at){ Time.zone.now + 2.days }
+      it{ should == {:time=>2, :unit=>"dias"} }
+    end
+
+    context "when there is less than 1 day to go" do
+      let(:expires_at){ Time.zone.now + 13.hours }
+      it{ should == {:time=>13, :unit=>"horas"} }
+    end
+
+    context "when there is less than 1 hour to go" do
+      let(:expires_at){ Time.zone.now + 59.minutes }
+      it{ should == {:time=>59, :unit=>"minutos"} }
+    end
+  end
+
+  describe "#progress" do
+    subject{ project.progress }
+    let(:pledged){ 0.0 }
+    let(:goal){ 0.0 }
+    before do
+        project.stub(:pledged).and_return(pledged)
+        project.stub(:goal).and_return(goal)
+    end
+
+    context "when goal == pledged > 0" do
+      let(:goal){ 10.0 }
+      let(:pledged){ 10.0 }
+      it{ should == 100 }
+    end
+
+    context "when goal is > 0 and pledged is 0.0" do
+      let(:goal){ 10.0 }
+      it{ should == 0 }
+    end
+
+    context "when goal is 0.0 and pledged > 0.0" do
+      let(:pledged){ 10.0 }
+      it{ should == 0 }
+    end
+
+    context "when goal is 0.0 and pledged is 0.0" do
+      it{ should == 0 }
+    end
+  end
+
   describe "#display_expires_at" do
     subject{ project.display_expires_at }
 
@@ -99,31 +154,6 @@ describe ProjectDecorator do
       it{ should == 'waiting_funds' }
     end
   end
-
-  describe '#display_video_embed_url' do
-    subject{ project.display_video_embed_url }
-
-    context 'source has a Vimeo video' do
-      let(:project) { create(:project, video_url: 'http://vimeo.com/17298435') }
-
-      it { should == 'http://player.vimeo.com/video/17298435?title=0&byline=0&portrait=0&autoplay=0' }
-    end
-
-    # In catarse.me we accept only vimeo videos, but feel free to uncomment this in your fork
-    # and adjust the project model accordingly :D
-    #context 'source has an Youtube video' do
-      #let(:project) { create(:project, video_url: "http://www.youtube.com/watch?v=Brw7bzU_t4c") }
-
-      #it { should == 'http://www.youtube.com/embed/Brw7bzU_t4c?title=0&byline=0&portrait=0&autoplay=0' }
-    #end
-
-    context 'source does not have a video' do
-      let(:project) { create(:project, video_url: "") }
-
-      it { should be_nil }
-    end
-  end
-
 
   describe "#successful_flag" do
     let(:project) { create(:project) }

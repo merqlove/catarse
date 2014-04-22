@@ -12,32 +12,29 @@ class Ability
       update.project.user_id == current_user.id
     end
     can :see, :updates do |update|
-      !update.exclusive || !current_user.backs.confirmed.where(project_id: update.project.id).empty?
+      !update.exclusive || !current_user.contributions.with_state('confirmed').where(project_id: update.project.id).empty?
     end
 
     # NOTE: Project authorizations
-    can :create, :projects if current_user.persisted?
-
     can :update, :projects, [:about, :video_url, :uploaded_image, :headline ] do |project|
       project.user == current_user && ( project.online? || project.waiting_funds? || project.successful? || project.failed? )
     end
 
     can :update, :projects do |project|
-      project.user == current_user && ( project.draft? || project.rejected? )
+      project.user == current_user && ( project.draft? || project.rejected? || project.in_analysis? )
     end
-
 
     # NOTE: Reward authorizations
     can :create, :rewards do |reward|
       reward.project.user == current_user
     end
 
-    can [:update, :sort], :rewards, [:description, :maximum_backers] do |reward|
-      reward.project.user == current_user
+    can [:update, :destroy], :rewards do |reward|
+      reward.contributions.with_state('waiting_confirmation').empty? && reward.contributions.with_state('confirmed').empty? && reward.project.user == current_user
     end
 
-    can [:update, :destroy], :rewards do |reward|
-      reward.backers.in_time_to_confirm.empty? && reward.backers.confirmed.empty? && reward.project.user == current_user
+    can [:update, :sort], :rewards, [:description, :maximum_contributions] do |reward|
+      reward.project.user == current_user
     end
 
     can :update, :rewards, :days_to_delivery do |reward|
@@ -49,7 +46,7 @@ class Ability
       current_user.persisted?
     end
 
-    can [:update, :credits, :manage, :update_password, :update_email], :users  do |user|
+    can [:update, :credits, :manage, :update_password, :update_email, :unsubscribe_notifications], :users  do |user|
       current_user == user
     end
 
@@ -57,12 +54,16 @@ class Ability
       current_user.admin
     end
 
+    # NOTE: Contribution authorizations
+    cannot :show, :contributions
+    can :create, :contributions if current_user.persisted?
 
-    # NOTE: Backer authorizations
-    cannot :show, :backers
-    can :create, :backers if current_user.persisted?
-    can [ :request_refund, :credits_checkout, :show, :update_info ], :backers do |backer|
-      backer.user == current_user
+    can [ :request_refund, :credits_checkout, :show, :update, :edit], :contributions do |contribution|
+      contribution.user == current_user
+    end
+
+    cannot :update, :contributions, [:user_attributes, :user_id, :user, :value, :payment_service_fee, :payment_id] do |contribution|
+      contribution.user == current_user
     end
 
     # Channel authorizations
@@ -73,52 +74,21 @@ class Ability
       cs.user == current_user
     end
 
-    if current_user.trustee?
-
-      can :access, :all
-      cannot :access, :projects
-      cannot :access, :rewards
-
-      can :create, :projects
-      can :access, :projects do |project|
-        current_user.channels_projects.exists?(project)
-      end
-
-
-      can :access, :rewards do |reward|
-        current_user.channels_projects.exists?(reward.project)
-      end
-
-
-      # For the access, :all
-      # we're removing the ability to update users at all, but
-      cannot [:update, :destroy], :users
-
-      # He can update himself
-      can :update, :users do |user|
-        user == current_user
-      end
-
-      # Nobody can destroy projects.
-      cannot :destroy, :projects
+    can [:update, :edit], :channels do |c|
+      c == current_user.channel
     end
 
-    # A trustee cannot access the adm/ path
-    # He can only do this if he is an admin too.
-    case options[:namespace]
-      when "Adm"
-        if current_user.trustee? && !current_user.admin?
-          cannot :access, :all
-        end
-      else
+    if options[:channel]  && options[:channel] == current_user.channel
+      can :access, :admin
+      can :access, :channel_posts
+      can :access, :admin_projects_path
+      can :access, :edit_channels_profile_path
+      can :access, :channels_admin_followers_path
+      can :access, :channels_admin_posts_path
     end
-
-
 
     # NOTE: admin can access everything.
     # It's the last ability to override all previous abilities.
     can :access, :all if current_user.admin?
-
-
   end
 end

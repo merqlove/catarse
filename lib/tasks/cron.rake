@@ -1,21 +1,35 @@
 desc "This task is called by the Heroku cron add-on"
 task :cron => :environment do
-  Project.finish_projects!
+  Project.to_finish.each do |project|
+    CampaignFinisherWorker.perform_async(project.id)
+  end
 end
 
-desc "Move to deleted state all backers that are in pending a lot of time"
-task :move_pending_backers_to_trash => [:environment] do
-  Backer.where("state in('pending') and created_at + interval '6 days' < current_timestamp").update_all({state: 'deleted'})
+desc "This tasks should be executed 1x per day"
+task notify_project_owner_about_new_confirmed_contributions: :environment do
+  Project.with_contributions_confirmed_today.each do |project|
+    Notification.notify_once(
+      :project_owner_contribution_confirmed,
+      project.user,
+      {user_id: project.user.id, project_id: project.id, 'notifications.created_at' => Date.today},
+      {project: project}
+    )
+  end
 end
 
-desc "Cancel all waiting_confirmation backers that is passed 4 weekdays"
-task :cancel_expired_waiting_confirmation_backers => :environment do
-  Backer.can_cancel.update_all(state: 'canceled')
+desc "Move to deleted state all contributions that are in pending a lot of time"
+task :move_pending_contributions_to_trash => [:environment] do
+  Contribution.where("state in('pending') and created_at + interval '6 days' < current_timestamp").update_all({state: 'deleted'})
+end
+
+desc "Cancel all waiting_confirmation contributions that is passed 4 weekdays"
+task :cancel_expired_waiting_confirmation_contributions => :environment do
+  Contribution.can_cancel.update_all(state: c)
 end
 
 desc "Send notification about credits 1 month after the project failed"
 task send_credits_notification: :environment do
-  Backer.send_credits_notification
+  User.send_credits_notification
 end
 
 desc "Create first versions for rewards"

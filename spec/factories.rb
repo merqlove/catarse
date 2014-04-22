@@ -38,26 +38,24 @@ FactoryGirl.define do
     f.online_days 5
     f.how_know 'Lorem ipsum'
     f.more_links 'Ipsum dolor'
-    f.first_backers 'Foo bar'
+    f.first_contributions 'Foo bar'
     f.video_url 'http://vimeo.com/17298435'
     f.state 'online'
-  end
-
-  factory :notification_type do |f|
-    f.name "confirm_backer"
   end
 
   factory :unsubscribe do |f|
     f.association :user, factory: :user
     f.association :project, factory: :project
-    f.association :notification_type, factory: :notification_type
   end
 
   factory :notification do |f|
     f.association :user, factory: :user
-    f.association :backer, factory: :backer
+    f.association :contribution, factory: :contribution
     f.association :project, factory: :project
-    f.association :notification_type, factory: :notification_type
+    f.template_name 'project_success'
+    f.origin_name 'Foo Bar'
+    f.origin_email 'foo@bar.com'
+    f.locale 'pt'
   end
 
   factory :reward do |f|
@@ -67,7 +65,7 @@ FactoryGirl.define do
     f.days_to_delivery 10
   end
 
-  factory :backer do |f|
+  factory :contribution do |f|
     f.association :project, factory: :project
     f.association :user, factory: :user
     f.confirmed_at Time.now
@@ -77,7 +75,7 @@ FactoryGirl.define do
   end
 
   factory :payment_notification do |f|
-    f.association :backer, factory: :backer
+    f.association :contribution, factory: :contribution
     f.extra_data {}
   end
 
@@ -117,8 +115,22 @@ FactoryGirl.define do
 
   factory :channel do
     name "Test"
+    email "email+channel@foo.bar"
     description "Lorem Ipsum"
     sequence(:permalink) { |n| "#{n}-test-page" }
+  end
+
+  factory :state do
+    name "RJ"
+    acronym "RJ"
+  end
+
+  factory :channel_post do |f|
+    f.association :user, factory: :user
+    f.association :channel, factory: :channel
+    title "My title"
+    f.body "This is a comment"
+    f.body_html "<p>This is a comment</p>"
   end
 
 end

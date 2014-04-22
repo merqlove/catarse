@@ -1,9 +1,43 @@
 [data-namespace="null"][data-controller="projects"][data-action="index"]
+  .banner
+    background: image-url('catarse_bootstrap/banner-3years.png') center center
+    height: 360px
+    margin: 0 auto 2em
+    overflow: hidden
+    position: relative
+    .content
+      background: image-url('catarse_bootstrap/banner-content.png') center center
+      position: absolute
+      top: 0
+      left: 50%
+      margin: 0 0 0 -463px
+      display: block
+      height: 360px
+      width: 926px
+    a
+      position: absolute
+      top: 230px
+      left: 39%
+      text-decoration: none
+      transition: 0.2s background
+      text-align: center
+      border: none
+      border-radius: 3px
+      display: inline-block
+      font-weight: bold
+      font-size: 15px
+      padding: 0.7em 1.5em
+      background: #3F4752
+      color: white
+      font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif
+      &:hover
+        background: lighten($blue-one, 5%)
+
   .channel_banner
     width: 100%
     height: 357px
-    border-top: 1px solid #DDDDDD 
-    border-bottom: 1px solid #DDDDDD 
+    border-top: 1px solid #DDDDDD
+    border-bottom: 1px solid #DDDDDD
     background: image-url("channels/banner_tile.jpg") left top repeat
     overflow: hidden
     margin-bottom: 50px
@@ -29,24 +63,3 @@
       text-align: right
       width: 50%
       float: left
-  
-  #page_content
-    .explore_link
-      padding-top: 20px
-      padding-bottom: 30px
-      float: left
-      hr
-        +grid(8)
-        border: none
-        border-bottom: 1px rgba(black, 0.1) solid
-        +omega
-        padding-top: 2px
-      a
-        +grid(4)
-        +omega
-        font-family: "Lato"
-        font-size: 14px
-        color: $pink
-        text-decoration: none
-        &:hover
-          color: $green

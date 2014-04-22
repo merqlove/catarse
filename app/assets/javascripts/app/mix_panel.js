@@ -5,8 +5,7 @@ App.addChild('MixPanel', {
     this.user = null;
     this.trackUserClickOnProjectsImage();
     this.trackUserClickOnProjectsTitle();
-    this.trackUserClickOnBackButton();
-    this.trackUserClickOnRecommendedProject();
+    this.trackUserClickOnContributeButton();
     this.trackUserClickOnReviewAndMakePayment();
     this.trackUserClickOnAcceptTerms();
     this.trackUserClickOnPaymentButton();
@@ -46,12 +45,8 @@ App.addChild('MixPanel', {
     this.trackOnMixPanel('#rewards .clickable_owner span.avaliable', 'click', 'Clicked on a reward');
   },
 
-  trackUserClickOnRecommendedProject: function(){
-    this.trackOnMixPanel('#recommended_header h2', 'click', 'Clicked on a recommended banner');
-  },
-
   trackUserClickOnReviewAndMakePayment: function(){
-    this.trackOnMixPanel('input#backer_submit', 'click', 'Clicked on Review and Make Payment');
+    this.trackOnMixPanel('input#contribution_submit', 'click', 'Clicked on Review and Make Payment');
   },
 
   trackUserClickOnAcceptTerms: function(){
@@ -62,8 +57,8 @@ App.addChild('MixPanel', {
     this.trackOnMixPanel('form.moip input[type="submit"]', 'click', 'Made a payment')
   },
 
-  trackUserClickOnBackButton: function(){
-    this.trackOnMixPanel('#back_project_form input', 'click', 'Clicked on Back this project');
+  trackUserClickOnContributeButton: function(){
+    this.trackOnMixPanel('#contribute_project_form input', 'click', 'Clicked on Contribute this project');
   },
 
   trackUserClickOnProjectsImage: function(){

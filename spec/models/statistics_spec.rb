@@ -2,11 +2,11 @@ require 'spec_helper'
 
 describe Statistics do
   before do
-    FactoryGirl.create(:project, state: 'successful')
-    FactoryGirl.create(:project, state: 'draft') 
-    project = FactoryGirl.create(:project, state: 'online')
-    FactoryGirl.create(:backer, state: 'confirmed', project: project )
-    FactoryGirl.create(:backer, project: project)
+    create(:project, state: 'successful')
+    create(:project, state: 'draft')
+    project = create(:project, state: 'online')
+    create(:contribution, state: 'confirmed', project: project )
+    create(:contribution, project: project)
   end
 
   describe "#total_users" do
@@ -14,19 +14,19 @@ describe Statistics do
     it{ should == User.count }
   end
 
-  describe "#total_backs" do
-    subject{ Statistics.first.total_backs }
-    it{ should == Backer.confirmed.count }
+  describe "#total_contributions" do
+    subject{ Statistics.first.total_contributions }
+    it{ should == Contribution.with_state('confirmed').count }
   end
 
-  describe "#total_backers" do
-    subject{ Statistics.first.total_backers }
-    it{ should == User.backers.count }
+  describe "#total_contributions" do
+    subject{ Statistics.first.total_contributions }
+    it{ should == User.contributions.count }
   end
 
-  describe "#total_backed" do
-    subject{ Statistics.first.total_backed }
-    it{ should == Backer.confirmed.sum(:value) }
+  describe "#total_contributed" do
+    subject{ Statistics.first.total_contributed}
+    it{ should == Contribution.with_state('confirmed').sum(:value) }
   end
 
   describe "#total_projects" do
@@ -41,6 +41,6 @@ describe Statistics do
 
   describe "#total_projects_online" do
     subject{ Statistics.first.total_projects_online }
-    it{ should == Project.online.count }
+    it{ should == Project.with_state('online').count }
   end
 end

@@ -1,5 +1,5 @@
 class RewardsController < ApplicationController
-  load_and_authorize_resource
+  load_and_authorize_resource except: [:index]
   inherit_resources
   belongs_to :project
   respond_to :html, :json
@@ -16,23 +16,12 @@ class RewardsController < ApplicationController
     render layout: false
   end
 
-  def show
-    @reward = Reward.find params[:id]
-    render json: @reward.to_json
-  end
-
   def update
-    update! do |success, failure|
-      success.html { render nothing: true, status: 200 }
-      failure.html { render :edit, layout: nil }
-    end
+    update!(notice: t('projects.update.success')) { project_by_slug_path(permalink: parent.permalink) }
   end
 
   def create
-    create! do |success, failure|
-      success.html { render nothing: true, status: 200 }
-      failure.html { render :new, layout: nil }
-    end
+    create!(notice: t('projects.update.success')) { project_by_slug_path(permalink: parent.permalink) }
   end
 
   def destroy
@@ -40,9 +29,13 @@ class RewardsController < ApplicationController
   end
 
   def sort
-    resource.row_order_position = params[:reward][:row_order_position]
-    resource.save
+    resource.update_attribute :row_order_position, params[:reward][:row_order_position]
 
     render nothing: true
+  end
+
+  private
+  def collection
+    @rewards ||= parent.rewards.includes(:contributions)
   end
 end

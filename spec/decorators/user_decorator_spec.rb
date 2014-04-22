@@ -30,10 +30,10 @@ describe UserDecorator do
   end
 
   describe "#display_image_html" do
-    let(:user){ build(:user, image_url: 'image.jpg', uploaded_image: nil )}
+    let(:user){ build(:user, image_url: 'http://image.jpg', uploaded_image: nil )}
     let(:options){ {width: 300, height: 300} }
     subject{ user.display_image_html(options) }
-    it{ should == "<div class=\"avatar_wrapper\" style=\"width: #{options[:width]}px; height: #{options[:height]}px\"><img alt=\"User\" src=\"/assets/#{user.display_image}\" style=\"width: #{options[:width]}px; height: auto\" /></div>" }
+    it{ should == "<div class=\"avatar_wrapper\" style=\"width: #{options[:width]}px; height: #{options[:height]}px\"><img alt=\"User\" src=\"#{user.display_image}\" style=\"width: #{options[:width]}px; height: auto\" /></div>" }
   end
 
   describe "#display_image" do
@@ -75,13 +75,13 @@ describe UserDecorator do
     its(:display_credits) { should == 'R$ 0'}
   end
 
-  describe "#display_total_of_backs" do
+  describe "#display_total_of_contributions" do
     subject { user = create(:user) }
-    context "with confirmed backs" do
+    context "with confirmed contributions" do
       before do
-        create(:backer, state: 'confirmed', user: subject, value: 500.0)
+        create(:contribution, state: 'confirmed', user: subject, value: 500.0)
       end
-      its(:display_total_of_backs) { should == 'R$ 500'}
+      its(:display_total_of_contributions) { should == 'R$ 500'}
     end
   end
 end

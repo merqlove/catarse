@@ -1,6 +1,13 @@
 class PaymentEngines
+  @@engines = []
+
+  def self.find_engine name
+    @@engines.find do |engine|
+      engine[:name].downcase == name.downcase
+    end
+  end
+
   def self.register options
-    @@engines ||= []
     @@engines.push(options)
   end
 
@@ -21,6 +28,6 @@ class PaymentEngines
   end
 
   def self.find_payment filter
-    Backer.where(filter).first
+    Contribution.where(filter).first
   end
 end
