@@ -19,6 +19,7 @@ en:
         submit: 'Filter'
         by_state: 'By state'
         by_progress: By progress %
+        menu: 'Financials'
     users:
       index:
         title: "Management contributions"
